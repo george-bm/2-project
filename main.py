@@ -1,4 +1,4 @@
-import sqlite3, os, configparser, requests, socket, smtplib, ssl, time, logging
+import sqlite3, os, configparser, requests, socket, smtplib, ssl, time, logging, re
 from flask import Flask, request
 from threading import Timer, Thread
 
@@ -42,20 +42,34 @@ def add_subscription():
     except:
         logging.error("JSON Decoding error")
         return "JSON Decoding error"
-    
     if not 'email' in data:
         logging.error("Email is required parameter")
         return "Email is required parameter"
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", data['email']):
+        logging.error("Email is not valid")
+        return "Email is not valid"
     if not 'ticker' in data:
         logging.error("Ticker is required parameter")
         return "Ticker is required parameter"
     if (not 'max_price' in data) and (not 'min_price' in data):
         logging.error("One of max_price or min_price parameter is required")
         return "One of max_price or min_price parameter is required"
-    if not 'min_price' in data: 
-        data["min_price"] = None
-    if not 'max_price' in data: 
+    if 'max_price' in data:
+        try:
+            float(data['max_price'])
+        except ValueError:
+            logging.error("Max_price is not valid price")
+            return "Max_price is not valid price"
+    else:
         data["max_price"] = None
+    if 'min_price' in data:
+        try:
+            float(data['min_price'])
+        except ValueError:
+            logging.error("Min_price is not valid price")
+            return "Min_price is not valid price"
+    else:
+        data["min_price"] = None
 
     conn = sqlite3.connect(db_file)
     cursor = conn.cursor()
