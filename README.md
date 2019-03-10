@@ -1,11 +1,12 @@
 # Результат тестового задания №2 на стажировку Backend KODE 2019.1
-Для создания проекта использовался веб-фреймворк Flask и библиотека Requests.
+Для создания проекта использовался веб-фреймворк Flask и библиотека Requests.  
+
 Данные проекта хранятся в базе данных SQLite notice.db которая создается при первом запуске.
 
 ## Установка
-Требуется установленный Python 3.
-Скачать файлы проекта в папку проекта.
-Установить зависимости:
+- Требуется установленный Python 3.
+- Скачать файлы проекта в папку проекта.
+- Установить зависимости:
 ```
 pip install -r requirements.txt
 ```
@@ -15,7 +16,7 @@ pip install -r requirements.txt
 - `smtp_server` - адрес smtp сервера через который будет происходить отправка email (например smtp.yandex.ru или smtp.gmail.com)
 - `port`- порт smtp сервера TLS (например для smtp.yandex.ru и smtp.gmail.com это 587)
 - `sender_email` - email адрес от имени которого будет происходить рассылка
-- `sender_title` - краткое наименование email адреса (Например Price monitoring)
+- `sender_title` - Имя отправителя (Например Price monitoring)
 - `password` - пароль от учетной записи email
 - `interval` - интервал времени в секундах через который будет производиться проверка цен тикеров и рассылка email. Рекомендованно 60, тк для бесплатных учетны записей сервиса alphavantage доступно 5 проверок в минуту и 500 в день.
 - `apikey` - ключ от API https://www.alphavantage.co 
@@ -25,6 +26,7 @@ pip install -r requirements.txt
 2. Откройте страницу Аккаунт Google https://myaccount.google.com/
 3. На панели навигации слева выберите Безопасность.
 4. В разделе Ненадежные приложения, у которых есть доступ к аккаунту в нижней части страницы нажмите Открыть доступ.
+
 Для работы через почту Yandex данная настройка не требуется
 ## Запуск
 Для запуска веб-сервиса:
@@ -32,8 +34,18 @@ pip install -r requirements.txt
 python main.py
 ```
 Сервис будет доступен по адресу http://127.0.0.1:5000/subscription
+
 Для остановки Ctrl+C
+
 Для создания POST и DELETE запросов можно использовать Chrome приложение Advanced REST Client или curl
 
+Команда POST для curl:
+```
+curl -d "{ \"ticker\": \"TSLA\", \"email\": \"mail@example.com\", \"max_price\": \"270.5200\", \"min_price\": \"240.200\"  }" -H "Content-Type: application/json" -X POST http://127.0.0.1:5000/subscription
+```
+Команда DELETE для curl:
+```
+curl -X DELETE "http://127.0.0.1:5000/subscription?email=mail@example.com&ticker=TSLA"
+```
 ## Логи
 События записываются в файл api.log который создается при первом запуске
